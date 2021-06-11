@@ -18,9 +18,11 @@ module.exports = (app) => {
 
     // 获取所有的username
     app.get('/getAllUsername', (req, res) => {
-        userModel.find({}, (error, userInfo) => {
+        // 不能展示密码
+        userModel.find({}, {username:true},(error, userInfo) => {
             if (error)
                 console.log(err)
+            // 获取所有username
             res.json(userInfo)
         })
     })

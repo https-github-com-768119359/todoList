@@ -13,7 +13,7 @@
 		<view class="login-form">
 			<form @submit="formSubmit">
 				<view class="form-input">
-					<input type="text" value="" placeholder="用户名" v-model="username" />
+					<input type="text" value="" placeholder="填写用户名,开始登陆或者注册" v-model="username" />
 				</view>
 				<view class="form-input">
 					<input type="password" value="" placeholder="密码" @focus="passwordF_B" @blur="passwordF_B"
@@ -105,8 +105,7 @@
 			async getUserInfo() {
 				const res = await this.$request({
 					url: `/userInfo/${this.username}/${this.password}`
-				})	
-				console.log(res.data)
+				})
 				if (res.data) {
 					this.loginMessage = res.data
 					if (this.loginMessage.username == this.username && this.loginMessage.password == this.password) {
