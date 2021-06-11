@@ -3,7 +3,10 @@ const mongoose = require('mongoose')
 // 用户和todoList是一对多关系
 const Schema = mongoose.Schema
 const userMessageSchema = new Schema({
-    username: String,
+    username:{
+        type:String,
+        unique:true
+    },
     password: String
 })
 

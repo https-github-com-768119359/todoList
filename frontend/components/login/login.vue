@@ -38,7 +38,6 @@
 				// 登陆
 				hideEyes: false,
 				username: "",
-				allUserName: [],
 				password: "",
 				userId: '',
 				loginMessage: [],
@@ -48,9 +47,6 @@
 		},
 		beforeCreate() {
 			uni.hideTabBar()
-		},
-		mounted() {
-			this.getAllUserName()
 		},
 		methods: {
 			// 登陆
@@ -70,14 +66,6 @@
 					})
 				}
 			},
-			async getAllUserName() {
-				const res = await this.$request({
-					url: '/getAllUsername'
-				})
-				for(let item of res.data){
-					this.allUserName.push(item.username)
-				}
-			},
 			async register() {
 				if (this.username == "" || this.password == "") {
 					uni.showToast({
@@ -85,32 +73,27 @@
 						icon: "none"
 					})
 				} else {
-					// 在vue中数组索引会出问题，不要再用了
-					for(let username of this.allUserName){
-						if(this.username == this.username){
-							uni.showToast({
-								title: "该用户名已被注册！",
-								icon: "none"
-							})
-						}else {
-							// 注册
-							let data = {
-								username: this.username,
-								password: this.password
-							}
-							const res = await this.$request({
-								url: '/addUser',
-								method: 'POST',
-								data: data
-							})
+						// 注册
+						let data = {
+							username: this.username,
+							password: this.password
+						}
+						const res = await this.$request({
+							url: '/addUser',
+							method: 'POST',
+							data: data
+						})
+						if(!res.data == ""){
 							uni.showToast({
 								title: "注册成功！"
 							})
-							this.allUserName = []
-							this.getAllUserName()
+						}else{
+							uni.showToast({
+								title: "用户名已被注册！",
+								icon:"none"
+							})
 						}
 					}
-				}
 			},
 			async getUserInfo() {
 				const res = await this.$request({
@@ -122,8 +105,7 @@
 						// 向父组件传递用户的_id值，即userId
 						this.$emit("changeIsLogin", this.loginMessage._id)
 						uni.showToast({
-							title: "登陆成功！",
-							icon: "loading"
+							title: "登陆成功！"
 						})
 						uni.showTabBar()
 					}
