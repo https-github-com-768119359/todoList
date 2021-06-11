@@ -10,21 +10,20 @@
 				<!-- 标题卡片模式 -->
 				<uni-card v-for="(item,index) in listData" @click="aditToDoForm(index)" :key="item._id"
 					:title="item.toDo" mode="title" :is-shadow="true" :note="item.date"
-					thumbnail="/static/index/mian.png"
-					>
+					thumbnail="/static/index/mian.png">
 					{{item.toDoDescription}}
 				</uni-card>
 			</view>
-			<view class="circleAdd" @click="showToDoForm">
+			<view v-if="showAdd" class="circleAdd" @click="showToDoForm">
 				<view class="addPng">
 					<image class="addPng-image" src="../../static/index/add.png" mode="scaleToFill"></image>
 				</view>
 			</view>
-			<uni-popup class="uni-popup" ref="adit" type="bottom" background-color="#fff">
+			<uni-popup class="uni-popup" ref="adit" type="bottom" background-color="#fff" @change="showAddPic">
 				<!-- 困扰的bug，通过在外面嵌套一层v-if决定是否渲染，否则空数组渲染会报错，因为找不到 -->
 				<!-- 太草了，搞了一个多小时，问题出在这个 -->
 				<view class="addToDoList" v-if="listData.length !== 0">
-					<view class="toDoListTitle" >
+					<view class="toDoListTitle">
 						<input v-model="listData[aditIndex].toDo" class="input-todo" type="text" value=""
 							placeholder="准备做什么" />
 						<view style="color:#4CD964;" @click="aditToDoList(aditIndex)">保存</view>
@@ -35,7 +34,7 @@
 					<uni-datetime-picker type="time" @change="editDate"></uni-datetime-picker>
 				</view>
 			</uni-popup>
-			<uni-popup class="uni-popup" ref="show" type="bottom" background-color="#fff">
+			<uni-popup class="uni-popup" ref="show" type="bottom" background-color="#fff" @change="showAddPic">
 				<view class="addToDoList">
 					<view class="toDoListTitle">
 						<input v-model="toDo" class="input-todo" type="text" value="" placeholder="准备做什么" />
@@ -69,21 +68,26 @@
 
 				// 是否登陆
 				isLogin: false,
-				
+
 				// 登录账号信息
-				userId:""
+				userId: "",
+
+				// 是否有添加图片
+				showAdd: true
 			}
 		},
-		components:{
+		components: {
 			login
 		},
 		methods: {
 			showToDoForm() {
 				this.$refs.show.open('bottom')
+				uni.hideTabBar()
 			},
 			aditToDoForm(index) {
 				this.$refs.adit.open('bottom')
 				this.aditIndex = index
+				uni.hideTabBar()
 			},
 			changeDate(time) {
 				this.date = time
@@ -91,10 +95,14 @@
 			editDate(time) {
 				this.listData[this.aditIndex].date = time
 			},
+			showAddPic() {
+				this.showAdd = !this.showAdd
+				uni.showTabBar()
+			},
 			// 获取todoList
 			async getToDoList() {
 				const res = await this.$request({
-					url:`/todoList/${this.userId}`
+					url: `/todoList/${this.userId}`
 				})
 				this.listData = res.data
 				this.toDoListNums = res.data.length
@@ -102,17 +110,17 @@
 			// 新增todoList
 			async addToDoList() {
 				let data = {
-					userId:this.userId,
+					userId: this.userId,
 					toDo: this.toDo,
 					toDoDescription: this.toDoDescription,
 					date: this.date
 				}
 				const res = await this.$request({
-					url:'/todoList',
+					url: '/todoList',
 					method: "POST",
 					data: data
 				})
-				if(res){
+				if (res) {
 					this.getToDoList()
 					uni.showToast({
 						title: "新建了todo清单"
@@ -132,11 +140,11 @@
 					date: this.listData[aditIndex].date
 				}
 				const res = await this.$request({
-					url:'/aditList',
+					url: '/aditList',
 					method: "POST",
 					data: data
 				})
-				if(res){
+				if (res) {
 					this.getToDoList()
 					uni.showToast({
 						title: "保存成功"
@@ -147,13 +155,13 @@
 			// 删除 toDoList
 			async deleteToDoList(aditIndex) {
 				const res = await this.$request({
-					url:'/deleteList',
+					url: '/deleteList',
 					method: "DELETE",
 					data: {
 						_id: this.listData[aditIndex]._id
 					}
 				})
-				if(res){
+				if (res) {
 					this.getToDoList()
 					uni.showToast({
 						title: "删除成功"
@@ -161,10 +169,15 @@
 					this.$refs.adit.close('bottom')
 				}
 			},
-			changeIsLogin(val){
+			changeIsLogin(val) {
 				this.isLogin = true
 				this.userId = val
 				this.getToDoList()
+			}
+		},
+		watch:{
+			inputAuto(){
+				
 			}
 		}
 	}
@@ -245,15 +258,20 @@
 
 			.uni-popup {
 				.addToDoList {
-					height: 300rpx;
+					height: 700rpx;
 
 					input {
 						margin-bottom: 10rpx;
 					}
 
+					.input-todo {
+						height: auto;
+					}
+
 					.input-todoDetails {
 						margin: 30rpx 30rpx;
 						font-size: 28rpx;
+						height: auto;
 					}
 
 					.toDoListTitle {
@@ -266,6 +284,6 @@
 			}
 		}
 
-		
+
 	}
 </style>

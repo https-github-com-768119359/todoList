@@ -16,15 +16,17 @@
 					<input class="usernameImg" type="text" value="" placeholder="填写用户名登陆" v-model="username" />
 				</view>
 				<view class="form-input">
-					<input class="password" type="password" value="" placeholder="密码" @focus="passwordF_B" @blur="passwordF_B"
-						v-model="password" />
+					<input class="password" type="password" value="" placeholder="密码" @focus="passwordF_B"
+						@blur="passwordF_B" v-model="password" />
 				</view>
 				<button type="primary" form-type="submit" @click="login">登录</button>
 				<view style="display:flex;justify-content: space-between;margin-top: 20rpx;">
 					<view form-type="submit" @click="register" style="color: #4CD964;">
 						注册</view>
-						<!-- 修改密码 -->
-					<view @click="changePassword"><image src="../../static/icon/query.png" style="height: 45rpx;width: 45rpx;"></image></view>
+					<!-- 修改密码 -->
+					<view @click="changePassword">
+						<image src="../../static/icon/query.png" style="height: 45rpx;width: 45rpx;"></image>
+					</view>
 				</view>
 			</form>
 		</view>
@@ -37,8 +39,8 @@
 			return {
 				// 登陆
 				hideEyes: false,
-				username: "",
-				password: "",
+				username: "reoreo",
+				password: "123456",
 				userId: '',
 				loginMessage: [],
 
@@ -53,9 +55,7 @@
 			passwordF_B() {
 				this.hideEyes = !this.hideEyes;
 			},
-			formSubmit(e) {
-				console.log(e.detail.value);
-			},
+			formSubmit(e) {},
 			login() {
 				if (!(this.username == "" || this.password == "")) {
 					this.getUserInfo()
@@ -73,27 +73,27 @@
 						icon: "none"
 					})
 				} else {
-						// 注册
-						let data = {
-							username: this.username,
-							password: this.password
-						}
-						const res = await this.$request({
-							url: '/addUser',
-							method: 'POST',
-							data: data
-						})
-						if(!res.data == ""){
-							uni.showToast({
-								title: "注册成功！"
-							})
-						}else{
-							uni.showToast({
-								title: "用户名已被注册！",
-								icon:"none"
-							})
-						}
+					// 注册
+					let data = {
+						username: this.username,
+						password: this.password
 					}
+					const res = await this.$request({
+						url: '/addUser',
+						method: 'POST',
+						data: data
+					})
+					if (!res.data == "") {
+						uni.showToast({
+							title: "注册成功！"
+						})
+					} else {
+						uni.showToast({
+							title: "用户名已被注册！",
+							icon: "none"
+						})
+					}
+				}
 			},
 			async getUserInfo() {
 				const res = await this.$request({
@@ -112,14 +112,14 @@
 				} else {
 					uni.showToast({
 						title: "账号或密码错误",
-						icon:"none"
+						icon: "none"
 					})
 				}
 			},
-			changePassword(){
+			changePassword() {
 				uni.showToast({
-					title:"开发中...",
-					icon:"none"
+					title: "开发中...",
+					icon: "none"
 				})
 			}
 		}
@@ -139,20 +139,22 @@
 		}
 
 		.form-input {
-			.usernameImg{
-				background-image:url(../../static/icon/Group.png);
+			.usernameImg {
+				background-image: url(../../static/icon/Group.png);
 				background-size: 45rpx 45rpx;
 				background-repeat: no-repeat;
-				background-position:left;
+				background-position: left;
 				padding: 0px 0px 0px 20px;
 			}
-			.password{
-				background-image:url(../../static/icon/Lock.png);
+
+			.password {
+				background-image: url(../../static/icon/Lock.png);
 				background-size: 45rpx 45rpx;
 				background-repeat: no-repeat;
-				background-position:left;
+				background-position: left;
 				padding: 0px 0px 0px 20px;
 			}
+
 			input {
 				background: #ffffff;
 				border-radius: 5px;
