@@ -13,15 +13,19 @@
 		<view class="login-form">
 			<form @submit="formSubmit">
 				<view class="form-input">
-					<input type="text" value="" placeholder="填写用户名,开始登陆或者注册" v-model="username" />
+					<input class="usernameImg" type="text" value="" placeholder="填写用户名登陆" v-model="username" />
 				</view>
 				<view class="form-input">
-					<input type="password" value="" placeholder="密码" @focus="passwordF_B" @blur="passwordF_B"
+					<input class="password" type="password" value="" placeholder="密码" @focus="passwordF_B" @blur="passwordF_B"
 						v-model="password" />
 				</view>
 				<button type="primary" form-type="submit" @click="login">登录</button>
-				<button type="primary" form-type="submit" @click="register"
-					style="margin-top: 20rpx;">还没有账号？输入后狠狠地点我^-^</button>
+				<view style="display:flex;justify-content: space-between;margin-top: 20rpx;">
+					<view form-type="submit" @click="register" style="color: #4CD964;">
+						注册</view>
+						<!-- 修改密码 -->
+					<view @click="changePassword"><image src="../../static/icon/query.png" style="height: 45rpx;width: 45rpx;"></image></view>
+				</view>
 			</form>
 		</view>
 	</view>
@@ -38,11 +42,11 @@
 				password: "",
 				userId: '',
 				loginMessage: [],
-				
+
 				status: false
 			}
 		},
-		beforeCreate(){
+		beforeCreate() {
 			uni.hideTabBar()
 		},
 		mounted() {
@@ -57,15 +61,21 @@
 				console.log(e.detail.value);
 			},
 			login() {
-				this.getUserInfo()
+				if (!(this.username == "" || this.password == "")) {
+					this.getUserInfo()
+				} else {
+					uni.showToast({
+						title: "不能为空！",
+						icon: "none"
+					})
+				}
 			},
 			async getAllUserName() {
 				const res = await this.$request({
 					url: '/getAllUsername'
 				})
-				for (let i = 0; i < res.data.length; i++) {
-					this.allUserName = []
-					this.allUserName.push(res.data[i].username)
+				for(let item of res.data){
+					this.allUserName.push(item.username)
 				}
 			},
 			async register() {
@@ -75,15 +85,14 @@
 						icon: "none"
 					})
 				} else {
-					console.log(this.username)
-					console.log(this.allUserName)
-					for(let i = 0; i < this.allUserName.length;i++){
-						if(this.username == this.allUserName[i]){
+					// 在vue中数组索引会出问题，不要再用了
+					for(let username of this.allUserName){
+						if(this.username == this.username){
 							uni.showToast({
-								title:"该用户名已被注册！",
-								icon:"none"
+								title: "该用户名已被注册！",
+								icon: "none"
 							})
-						}else{
+						}else {
 							// 注册
 							let data = {
 								username: this.username,
@@ -95,8 +104,9 @@
 								data: data
 							})
 							uni.showToast({
-								title:"注册成功！"
+								title: "注册成功！"
 							})
+							this.allUserName = []
 							this.getAllUserName()
 						}
 					}
@@ -112,16 +122,23 @@
 						// 向父组件传递用户的_id值，即userId
 						this.$emit("changeIsLogin", this.loginMessage._id)
 						uni.showToast({
-							title: "登陆成功",
-							icon: "success"
+							title: "登陆成功！",
+							icon: "loading"
 						})
 						uni.showTabBar()
 					}
 				} else {
 					uni.showToast({
-						title: "账号或密码错误"
+						title: "账号或密码错误",
+						icon:"none"
 					})
 				}
+			},
+			changePassword(){
+				uni.showToast({
+					title:"开发中...",
+					icon:"none"
+				})
 			}
 		}
 	}
@@ -140,6 +157,20 @@
 		}
 
 		.form-input {
+			.usernameImg{
+				background-image:url(../../static/icon/Group.png);
+				background-size: 45rpx 45rpx;
+				background-repeat: no-repeat;
+				background-position:left;
+				padding: 0px 0px 0px 20px;
+			}
+			.password{
+				background-image:url(../../static/icon/Lock.png);
+				background-size: 45rpx 45rpx;
+				background-repeat: no-repeat;
+				background-position:left;
+				padding: 0px 0px 0px 20px;
+			}
 			input {
 				background: #ffffff;
 				border-radius: 5px;
