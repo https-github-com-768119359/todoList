@@ -43,10 +43,12 @@
 				status: false,
 				userId:'',
 				username:'',
-				password:'',
-				
-				// 是否自动登录
-				isAutoLogin:false
+				password:''
+			}
+		},
+		computed:{
+			isLogin(){
+				return this.$store.state.isLogin
 			}
 		},
 		beforeCreate() {
@@ -62,7 +64,6 @@
 						this.password = res.data.password;
 					}
 				})
-				this.isAutoLogin = true
 			}
 		},
 		methods: {

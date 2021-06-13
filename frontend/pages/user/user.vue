@@ -26,6 +26,16 @@
 				}
 			})
 		},
+		computed: {
+			isLogin: {
+				get() {
+					return this.$store.state.isLogin
+				},
+				set(val) {
+					this.$store.commit('setLogin', val)
+				}
+			}
+		},
 		methods: {
 			logout() {
 				uni.showModal({
@@ -35,6 +45,10 @@
 							uni.reLaunch({
 								url: '../index/index',
 								success: () => {
+									this.isLogin = false
+									uni.removeStorage({
+										key:'userInfo'
+									})
 									uni.showToast({
 										title: `用户 ${this.username} 已成功登出！`,
 										icon: "none"

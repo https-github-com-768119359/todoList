@@ -65,7 +65,7 @@
 				listData: [],
 
 				// 是否登陆
-				isLogin: false,
+				// isLogin: false,
 
 				// 登录账号信息
 				userId: "",
@@ -74,6 +74,16 @@
 				showAdd: true,
 				
 				isAutoLogin:false
+			}
+		},
+		computed: {
+			isLogin: {
+				get() {
+					return this.$store.state.isLogin
+				},
+				set(val) {
+					this.$store.commit('setLogin', val)
+				}
 			}
 		},
 		components: {
