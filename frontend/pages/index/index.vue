@@ -29,7 +29,7 @@
 					</view>
 					<input v-model="listData[aditIndex].toDoDescription" class="input-todoDetails" type="text" value=""
 						placeholder="添加描述" />
-					<uni-datetime-picker type="time" @change="editDate"></uni-datetime-picker>
+						<uni-datetime-picker type="time" @change="editDate"></uni-datetime-picker>
 				</view>
 			</uni-popup>
 			<uni-popup class="uni-popup" ref="show" type="bottom" background-color="#fff" @change="showAddPic">
@@ -61,15 +61,15 @@
 				toDoListNums: 0,
 				toDo: "",
 				toDoDescription: "",
-				date: new Date(),
+				date: "",
 				listData: [],
-				
+
 				// 是否有添加图片
 				showAdd: true
 			}
 		},
-		beforeMount(){
-			if(this.isLogin){
+		beforeMount() {
+			if (this.isLogin) {
 				this.getToDoList()
 			}
 		},
@@ -124,26 +124,33 @@
 			},
 			// 新增todoList
 			async addToDoList() {
-				let data = {
-					userId: this.userId,
-					toDo: this.toDo,
-					toDoDescription: this.toDoDescription,
-					date: this.date
-				}
-				const res = await this.$request({
-					url: '/todoList',
-					method: "POST",
-					data: data
-				})
-				if (res) {
-					this.getToDoList()
-					uni.showToast({
-						title: "新建了todo清单"
+				if(this.toDo !== '' && this.date !== ''){
+					let data = {
+						userId: this.userId,
+						toDo: this.toDo,
+						toDoDescription: this.toDoDescription,
+						date: this.date
+					}
+					const res = await this.$request({
+						url: '/todoList',
+						method: "POST",
+						data: data
 					})
-					this.toDo = ""
-					this.toDoDescription = ""
-					this.$refs.show.close('bottom')
-					this.toDoListNums++
+					if (res) {
+						this.getToDoList()
+						uni.showToast({
+							title: "新建了todo清单"
+						})
+						this.toDo = ""
+						this.toDoDescription = ""
+						this.$refs.show.close('bottom')
+						this.toDoListNums++
+					}
+				}else{
+					uni.showToast({
+						title:'标题、时间不能为空！',
+						icon:"none"
+					})
 				}
 			},
 			// 修改 todoList
@@ -280,13 +287,13 @@
 					}
 
 					.input-todo {
-						height: auto;
+						
 					}
 
 					.input-todoDetails {
 						margin: 30rpx 30rpx;
 						font-size: 28rpx;
-						height: auto;
+
 					}
 
 					.toDoListTitle {
@@ -296,6 +303,7 @@
 						margin: 30rpx 30rpx;
 					}
 				}
+
 			}
 		}
 	}

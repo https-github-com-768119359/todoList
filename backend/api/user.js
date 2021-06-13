@@ -32,6 +32,7 @@ module.exports = (app) => {
         userModel.create(req.body, (err, result) => {
             if (err)
                 console.log(err)
+            console.log(result)
             res.json(result)
         })
     })

@@ -11,23 +11,29 @@
 			</view>
 		</view>
 		<view class="login-form">
-			<form @submit="formSubmit">
-				<view class="form-input">
-					<input class="usernameImg" type="text" value="" placeholder="填写用户名登陆" v-model="username" />
+			<view class="form-input">
+				<input class="usernameImg" type="text" value="" placeholder="填写用户名注册或登陆" v-model="username" />
+			</view>
+			<view class="form-input">
+				<input class="password" type="password" value="" placeholder="密码" @focus="passwordF_B"
+					@blur="passwordF_B" v-model="password" />
+			</view>
+			<view class="form-input verflex">
+				<input class="vercode" v-model="verCode" type="text" maxlength="4" placeholder="请输入右方验证码"></input>
+				<view class="canvas-img-code" @click="refresh()">
+					<canvas :style="{width:width+'px',height:height+'px'}" canvas-id="imgcanvas"
+						@error="canvasIdErrorCallback"></canvas>
 				</view>
-				<view class="form-input">
-					<input class="password" type="password" value="" placeholder="密码" @focus="passwordF_B"
-						@blur="passwordF_B" v-model="password" />
+			</view>
+			<button type="primary" form-type="submit" @click="login">登录</button>
+			<view style="display:flex;justify-content: space-between;margin-top: 20rpx;">
+				<view form-type="submit" @click="register" style="color: #4CD964;">
+					注册</view>
+				<!-- 修改密码 -->
+				<view @click="changePassword">
+					<image src="../../static/icon/query.png" style="height: 45rpx;width: 45rpx;"></image>
 				</view>
-				<button type="primary" form-type="submit" @click="login">登录</button>
-				<view style="display:flex;justify-content: space-between;margin-top: 20rpx;">
-					<view form-type="submit" @click="register" style="color: #4CD964;">
-						注册</view>
-					<!-- 修改密码 -->
-					<view @click="changePassword">
-						<image src="../../static/icon/query.png" style="height: 45rpx;width: 45rpx;"></image>
-					</view>
-				</view>
+			</view>
 			</form>
 		</view>
 	</view>
@@ -41,12 +47,17 @@
 				hideEyes: false,
 				loginMessage: [],
 				status: false,
-				username:'',
-				password:''
+				username: '',
+				password: '',
+
+				// 验证码
+				verCode: "", //验证码
+				width: 120,
+				height: 45
 			}
 		},
-		computed:{
-			isLogin(){
+		computed: {
+			isLogin() {
 				return this.$store.state.isLogin
 			},
 			userId: {
@@ -62,10 +73,10 @@
 			uni.hideTabBar()
 			// 缓存登录信息
 			let userInfo = uni.getStorageSync('userInfo') || '';
-			if(userInfo){
+			if (userInfo) {
 				// 更新登录状态
 				uni.getStorage({
-					key:'userInfo',
+					key: 'userInfo',
 					success: (res) => {
 						this.username = res.data.username;
 						this.password = res.data.password;
@@ -73,50 +84,141 @@
 				})
 			}
 		},
+		mounted() {
+			this.init()
+		},
 		methods: {
 			// 登陆
 			passwordF_B() {
 				this.hideEyes = !this.hideEyes;
 			},
-			formSubmit(e) {},
 			login() {
-				if (!(this.username == "" || this.password == "")) {
-					this.getUserInfo()
-				} else {
-					uni.showToast({
-						title: "不能为空！",
-						icon: "none"
-					})
-				}
+				uni.getStorage({
+					key: 'imgcode',
+					success: (res) => {
+						if (this.verCode == res.data) {
+							if (!(this.username == "" || this.password == "")) {
+								this.getUserInfo()
+							} else {
+								uni.showToast({
+									title: "用户名和密码不能为空！",
+									icon: "none"
+								})
+							}
+						} else {
+							uni.showToast({
+								title: "验证为空或错误！",
+								icon: "none"
+							})
+						}
+					}
+				})
 			},
-			async register() {
+			// 初始化验证码
+			init: function() {
+				// console.log('start');
+				let context = uni.createCanvasContext('imgcanvas', this),
+					w = this.width,
+					h = this.height;
+				context.setFillStyle("white");
+				context.setLineWidth(5);
+				context.fillRect(0, 0, w, h);
+				let pool = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "I", "M", "N", "O", "P", "Q",
+						"R", "S",
+						"T", "U", "V", "W", "S", "Y", "Z", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0"
+					],
+					str = '';
+				for (let i = 0; i < 4; i++) {
+					let c = pool[this.rn(0, pool.length - 1)];
+					let deg = this.rn(-30, 30);
+					context.setFontSize(18);
+					context.setTextBaseline("top");
+					context.setFillStyle(this.rc(80, 150));
+					context.save();
+					context.translate(30 * i + 15, parseInt(h / 1.5));
+					context.rotate(deg * Math.PI / 180);
+					context.fillText(c, -15 + 5, -15);
+					context.restore();
+					str += c;
+				}
+				uni.setStorage({
+					key: 'imgcode',
+					data: str,
+				});
+				for (let i = 0; i < 40; i++) {
+					context.beginPath();
+					context.arc(this.rn(0, w), this.rn(0, h), 1, 0, 2 * Math.PI);
+					context.closePath();
+					context.setFillStyle(this.rc(150, 200));
+					context.fill();
+				}
+				context.draw();
+				// console.log('end');
+			},
+			rc: function(min, max) {
+				let r = this.rn(min, max);
+				let g = this.rn(min, max);
+				let b = this.rn(min, max);
+				return "rgb(" + r + "," + g + "," + b + ")";
+			},
+			rn: function(max, min) {
+				return parseInt(Math.random() * (max - min)) + min;
+			},
+			refresh: function() {
+				this.init();
+			},
+			canvasIdErrorCallback: function(e) {
+				// console.error(e.detail.errMsg)
+			},
+			register() {
 				if (this.username == "" || this.password == "") {
 					uni.showToast({
-						title: "不能为空！",
+						title: "用户名或账号不能为空！",
 						icon: "none"
 					})
 				} else {
 					// 注册
+					uni.getStorage({
+						key: 'imgcode',
+						success: (res) => {
+							if (this.verCode == res.data) {
+								this.toRegister()
+							} else {
+								uni.showToast({
+									title: "验证码为空或错误！",
+									icon: "none"
+								})
+							}
+						}
+					})
+				}
+			},
+			async toRegister(){
 					let data = {
 						username: this.username,
 						password: this.password
 					}
-					const res = await this.$request({
+					const result =  await this.$request({
 						url: '/addUser',
 						method: 'POST',
 						data: data
 					})
-					if (!res.data == "") {
-						uni.showToast({
-							title: "注册成功！"
-						})
-					} else {
+					if(result.data == ""){
 						uni.showToast({
 							title: "用户名已被注册！",
 							icon: "none"
 						})
+					}else{
+						uni.showModal({
+							title:"注册成功！",
+							content:'是否选择登录？',
+							success: (res) => {
+								if(res.confirm){
+									this.login()
+								}
+							}
+						})
 					}
-				}
 			},
 			async getUserInfo() {
 				const res = await this.$request({
@@ -127,13 +229,13 @@
 					if (this.loginMessage.username == this.username && this.loginMessage.password == this.password) {
 						// 向父组件传递用户的_id值，即userId
 						this.userId = this.loginMessage._id
-						this.$emit("changeIsLogin",this.loginMessage._id)
+						this.$emit("changeIsLogin", this.loginMessage._id)
 						uni.showToast({
 							title: "登陆成功！"
 						})
 						uni.setStorage({
-							key:'userInfo',
-							data:this.loginMessage
+							key: 'userInfo',
+							data: this.loginMessage
 						})
 						uni.showTabBar()
 					}
@@ -155,6 +257,14 @@
 </script>
 
 <style lang="scss">
+	.verflex {
+		display: flex;
+	}
+
+	.canvas-img-code {
+		margin: 40rpx 40rpx;
+	}
+
 	.container-login {
 		.login-form {
 			margin: -9px 10px 0 10px;
@@ -167,6 +277,7 @@
 		}
 
 		.form-input {
+
 			.usernameImg {
 				background-image: url(../../static/icon/Group.png);
 				background-size: 45rpx 45rpx;
@@ -181,6 +292,10 @@
 				background-repeat: no-repeat;
 				background-position: left;
 				padding: 0px 0px 0px 20px;
+			}
+
+			.vercode {
+				width: 280rpx;
 			}
 
 			input {

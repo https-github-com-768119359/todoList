@@ -39,7 +39,8 @@
 		methods: {
 			logout() {
 				uni.showModal({
-					content: `是否登出账号${this.username}?`,
+					title:`是否登出账号${this.username}?`,
+					content: `注意：您的账号将在退出时删除本地账号缓存，请注意保存账号密码`,
 					success: (res) => {
 						if (res.confirm) {
 							uni.reLaunch({
