@@ -1,11 +1,11 @@
 <template>
 	<view class="user">
 		<view class="headImg"><image src="../../static/index/mian.png"></image></view>
-		<view class="message">
-			<text class="user_title">用户名：{{}}</text>
+		<view class="message" @click="userDetails">
+			<text class="user_title">用户名：{{username}}</text>
 			<text class="user_message">前往完善用户信息</text>
 		</view>
-		<button type="primary" class="exit">退出登录</button>
+		<button type="primary" class="exit" @click="logout">退出登录</button>
 	</view>
 </template>
 
@@ -13,9 +13,29 @@
 	export default {
 		data() {
 			return {
+				username:""
 			}
 		},
+		beforeCreate() {
+			uni.getStorage({
+				key:'userInfo',
+				success: (res) => {
+					this.username = res.data.username
+				}
+			})
+		},
 		methods: {
+			logout(){
+				uni.reLaunch({
+					url:'../index/index'
+				})
+			},
+			userDetails(){
+				uni.showToast({
+					title:'开发中',
+					icon:"none"
+				})
+			}
 		}
 	}
 </script>

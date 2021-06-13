@@ -49,7 +49,8 @@
 		beforeCreate() {
 			uni.hideTabBar()
 			// 缓存登录信息
-			let userInfo = uni.getStorageInfoSync('userInfo') || '';
+			let userInfo = uni.getStorageSync('userInfo') || '';
+			console.log(userInfo)
 			if(userInfo){
 				// 更新登录状态
 				uni.getStorage({
