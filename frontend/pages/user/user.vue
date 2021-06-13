@@ -15,14 +15,17 @@
 	export default {
 		data() {
 			return {
-				username: ""
+				username: "",
+				password:""
 			}
 		},
 		beforeCreate() {
 			uni.getStorage({
 				key: 'userInfo',
 				success: (res) => {
+					console.log(res)
 					this.username = res.data.username
+					this.password = res.data.password
 				}
 			})
 		},
@@ -61,9 +64,11 @@
 				})
 			},
 			userDetails() {
-				uni.showToast({
-					title: '开发中',
-					icon: "none"
+				uni.showModal({
+					title:'用户信息',
+					content:`用户账号：${this.username}
+							用户密码：${this.password}`,
+					showCancel:false
 				})
 			}
 		}

@@ -113,7 +113,6 @@
 						}
 					}
 				})
-				this.refresh()
 			},
 			// 初始化验证码
 			init: function() {
@@ -193,7 +192,6 @@
 						}
 					})
 				}
-				this.refresh()
 			},
 			async toRegister(){
 					let data = {
@@ -210,6 +208,7 @@
 							title: "用户名已被注册！",
 							icon: "none"
 						})
+						this.refresh()
 					}else{
 						uni.showModal({
 							title:"注册成功！",
@@ -240,6 +239,7 @@
 							data: this.loginMessage
 						})
 						uni.showTabBar()
+						this.refresh()
 					}
 				} else {
 					uni.showToast({
