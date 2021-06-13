@@ -41,7 +41,6 @@
 				hideEyes: false,
 				loginMessage: [],
 				status: false,
-				userId:'',
 				username:'',
 				password:''
 			}
@@ -49,6 +48,14 @@
 		computed:{
 			isLogin(){
 				return this.$store.state.isLogin
+			},
+			userId: {
+				get() {
+					return this.$store.state.userId
+				},
+				set(val) {
+					this.$store.commit('setUserId', val)
+				}
 			}
 		},
 		beforeCreate() {
@@ -119,7 +126,8 @@
 					this.loginMessage = res.data
 					if (this.loginMessage.username == this.username && this.loginMessage.password == this.password) {
 						// 向父组件传递用户的_id值，即userId
-						this.$emit("changeIsLogin", [this.loginMessage._id,this.isAutoLogin])
+						this.userId = this.loginMessage._id
+						this.$emit("changeIsLogin",this.loginMessage._id)
 						uni.showToast({
 							title: "登陆成功！"
 						})

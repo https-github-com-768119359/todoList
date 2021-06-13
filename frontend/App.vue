@@ -4,9 +4,10 @@
 			uni.getStorage({
 				key: "userInfo",
 				success: (res) => {
+					console.log(res)
 					if (res.data.username) {
 						this.isLogin = true
-						console.log(this.isLogin)
+						this.userId = res.data._id
 					}
 				}
 			})
@@ -24,6 +25,14 @@
 				},
 				set(val) {
 					this.$store.commit('setLogin', val)
+				}
+			},
+			userId: {
+				get() {
+					return this.$store.state.userId
+				},
+				set(val) {
+					this.$store.commit('setUserId', val)
 				}
 			}
 		}

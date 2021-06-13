@@ -63,17 +63,14 @@
 				toDoDescription: "",
 				date: new Date(),
 				listData: [],
-
-				// 是否登陆
-				// isLogin: false,
-
-				// 登录账号信息
-				userId: "",
-
-				// 是否有添加图片
-				showAdd: true,
 				
-				isAutoLogin:false
+				// 是否有添加图片
+				showAdd: true
+			}
+		},
+		beforeMount(){
+			if(this.isLogin){
+				this.getToDoList()
 			}
 		},
 		computed: {
@@ -83,6 +80,14 @@
 				},
 				set(val) {
 					this.$store.commit('setLogin', val)
+				}
+			},
+			userId: {
+				get() {
+					return this.$store.state.userId
+				},
+				set(val) {
+					this.$store.commit('setUserId', val)
 				}
 			}
 		},
@@ -181,8 +186,7 @@
 			},
 			changeIsLogin(val) {
 				this.isLogin = true
-				this.userId = val[0]
-				this.isAutoLogin = val[1]
+				this.userId = val
 				this.getToDoList()
 			}
 		},
@@ -294,7 +298,5 @@
 				}
 			}
 		}
-
-
 	}
 </style>
