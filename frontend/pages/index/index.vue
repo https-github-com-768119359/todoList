@@ -20,8 +20,6 @@
 				</view>
 			</view>
 			<uni-popup class="uni-popup" ref="adit" type="bottom" background-color="#fff" @change="showAddPic">
-				<!-- 困扰的bug，通过在外面嵌套一层v-if决定是否渲染，否则空数组渲染会报错，因为找不到 -->
-				<!-- 太草了，搞了一个多小时，问题出在这个 -->
 				<view class="addToDoList" v-if="listData.length !== 0">
 					<view class="toDoListTitle">
 						<input v-model="listData[aditIndex].toDo" class="input-todo" type="text" value=""
@@ -175,9 +173,9 @@
 				this.getToDoList()
 			}
 		},
-		watch:{
-			inputAuto(){
-				
+		watch: {
+			inputAuto() {
+
 			}
 		}
 	}
