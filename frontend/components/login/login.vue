@@ -113,6 +113,7 @@
 						}
 					}
 				})
+				this.refresh()
 			},
 			// 初始化验证码
 			init: function() {
@@ -192,6 +193,7 @@
 						}
 					})
 				}
+				this.refresh()
 			},
 			async toRegister(){
 					let data = {
