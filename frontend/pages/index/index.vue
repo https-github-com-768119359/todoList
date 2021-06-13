@@ -71,7 +71,9 @@
 				userId: "",
 
 				// 是否有添加图片
-				showAdd: true
+				showAdd: true,
+				
+				isAutoLogin:false
 			}
 		},
 		components: {
@@ -169,7 +171,8 @@
 			},
 			changeIsLogin(val) {
 				this.isLogin = true
-				this.userId = val
+				this.userId = val[0]
+				this.isAutoLogin = val[1]
 				this.getToDoList()
 			}
 		},
