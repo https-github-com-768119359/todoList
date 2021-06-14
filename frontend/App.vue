@@ -4,7 +4,6 @@
 			uni.getStorage({
 				key: "userInfo",
 				success: (res) => {
-					console.log(res)
 					if (res.data.username) {
 						this.isLogin = true
 						this.userId = res.data._id

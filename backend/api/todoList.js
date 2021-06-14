@@ -4,11 +4,16 @@ module.exports = (app) => {
     // 查询时需要带上userId查询，确保查询到的是每个用户的todoList
     app.get('/todoList/:userId', (req, res) => {
         const userId = req.params.userId
-        todoListModel.find({userId:userId}, (error, todoData) => {
-            if (error)
-                console.log(err)
-            res.json(todoData)
-        })
+        // 查询参数
+        const isFinish = req.query.isFinish
+            todoListModel.find({
+                userId: userId,
+                isFinish:isFinish
+            }, (err, todoData) => {
+                if (err)
+                    console.log(err)
+                res.json(todoData)
+            })
     })
 
     // 添加 todoList
@@ -38,7 +43,23 @@ module.exports = (app) => {
         })
     })
 
-    // 删除 todoList
+    // 修改 todoList 为已完成或未完成
+    // 即修改 isFinish 为 true 或者 false
+    app.post('/aditFinishList', (req, res) => {
+        let id = req.body._id
+        let isFinish = req.query.isFinish
+        todoListModel.updateOne({
+            _id: id
+        }, {
+            $set:{isFinish:isFinish}
+        },(err, result) => {
+            if (err)
+                console.log(err)
+            res.json(result)
+        })
+    })
+
+    // 删除
     app.delete('/deleteList', (req, res) => {
         let id = req.body._id
         todoListModel.deleteOne({

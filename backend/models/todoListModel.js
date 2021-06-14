@@ -9,7 +9,9 @@ const todoListSchema = new Schema({
     },
     toDo: String,
     toDoDescription: String,
-    date: String
+    date: String,
+    // 是否完成，true则进入代办箱
+    isFinish:Boolean
 })
 
 const todoListModel = mongoose.model('todoList', todoListSchema)

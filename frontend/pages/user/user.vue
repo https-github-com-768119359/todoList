@@ -23,7 +23,6 @@
 			uni.getStorage({
 				key: 'userInfo',
 				success: (res) => {
-					console.log(res)
 					this.username = res.data.username
 					this.password = res.data.password
 				}
@@ -67,7 +66,7 @@
 				uni.showModal({
 					title:'用户信息',
 					content:`用户账号：${this.username}
-							用户密码：${this.password}`,
+					用户密码：${this.password}`,
 					showCancel:false
 				})
 			}
