@@ -1,13 +1,15 @@
 <template>
-	<view class="user">
-		<view class="headImg">
-			<image src="../../static/index/mian.png"></image>
+	<view>
+		<view class="user">
+			<view class="headImg">
+				<image src="../../static/index/mian.png"></image>
+			</view>
+			<view class="message" @click="userDetails">
+				<text class="user_title">用户名：{{username}}</text>
+				<text class="user_message">前往完善用户信息</text>
+			</view>
+			<button type="primary" class="exit" @click="logout">退出登录</button>
 		</view>
-		<view class="message" @click="userDetails">
-			<text class="user_title">用户名：{{username}}</text>
-			<text class="user_message">前往完善用户信息</text>
-		</view>
-		<button type="primary" class="exit" @click="logout">退出登录</button>
 	</view>
 </template>
 

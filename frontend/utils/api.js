@@ -26,10 +26,3 @@ export const request = (options) => {
 		})
 	})
 }
-// request({
-// 	url:'/api/...',
-// 	method:'POST',
-// 	data:{
-		
-// 	}
-// })

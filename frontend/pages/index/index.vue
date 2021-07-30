@@ -1,5 +1,20 @@
 <template>
 	<view class="index">
+		<u-navbar :is-back="false" v-if="isLogin">
+			<view class="slot-wrap" @click="showDateChose">
+				<u-icon name="calendar" color="#2AC940" size="40"></u-icon>
+				{{todayDate}}
+				{{week}}
+			</view>
+			<!-- 最近一周日期选择 -->
+			<u-popup v-model="showDateChoice" border-radius="14">
+				<view class="show-button">
+					<u-button v-for="(item,index) in dateMessage" :plain="true"
+						:custom-style="customStyle">{{item}}
+					</u-button>
+				</view>
+			</u-popup>
+		</u-navbar>
 		<!-- todoList主体内容 -->
 		<view class="container-main" v-if="isLogin">
 			<view v-if="listData.length == 0">
@@ -8,25 +23,25 @@
 			</view>
 			<view v-if="listData.length !== 0" class="showList">
 				<!-- 标题卡片模式 -->
-				<uni-card v-for="(item,index) in listData" @click="aditToDoForm(index)" :key="item._id"
+				<!-- 				<uni-card v-for="(item,index) in listData" @click="aditToDoForm(index)" :key="item._id"
 					:title="item.toDo" mode="title" :is-shadow="true" :note="item.date">
 					{{item.toDoDescription}}
-				</uni-card>
+				</uni-card> -->
 			</view>
 			<view v-if="showAdd" class="circleAdd" @click="showToDoForm">
 				<view class="addPng">
 					<image class="addPng-image" src="../../static/index/add.png" mode="scaleToFill"></image>
 				</view>
 			</view>
-			<view v-if="showAdd" class="bin" @click="showFinishForm">
+			<!-- 			<view v-if="showAdd" class="bin" @click="showFinishForm">
 				<view style="z-index: 1000;position: fixed;bottom: 130rpx;margin-left: 110rpx;color: #4CD964;">
 					{{isFinishNums}}
 				</view>
 				<view class="binPng">
 					<image class="binPng-image" src="../../static/index/bin.png" mode="scaleToFill"></image>
 				</view>
-			</view>
-			<uni-popup class="finish-popup" ref="finishList" type="left" background-color="#fff" @change="showAddPic">
+			</view> -->
+			<!-- 			<uni-popup class="finish-popup" ref="finishList" type="left" background-color="#fff" @change="showAddPic">
 				<view class="finish-title">
 					<view class="finish-title-today">今天</view>
 				</view>
@@ -43,7 +58,9 @@
 						</view>
 					</view>
 				</scroll-view>
-			</uni-popup>
+			</uni-popup> -->
+
+			<!-- 弹出层 -->
 			<uni-popup class="uni-popup" ref="adit" type="bottom" background-color="#fff" @change="showAddPic">
 				<view class="addToDoList" v-if="listData.length !== 0">
 					<view class="toDoListTitle">
@@ -100,10 +117,21 @@
 				listData: [],
 				finishList: [],
 				// 是否有添加图片
-				showAdd: true
+				showAdd: true,
+				// 时间
+				dateMessage: [],
+				todayDate: 0,
+				week: '',
+				// popup层
+				showDateChoice: false,
+				customStyle: {
+					marginTop: '20px', // 注意驼峰命名，并且值必须用引号包括，因为这是对象
+					color: '#2AC940'
+				}
 			}
 		},
 		beforeMount() {
+			this.init()
 			if (this.isLogin) {
 				this.getToDoList()
 				this.getFinishList()
@@ -131,6 +159,25 @@
 			login
 		},
 		methods: {
+			init() {
+				let date = new Date()
+				this.todayDate = (date.getMonth() + 1) + '-' + date.getDate()
+				this.week = "星期" + "天一二三四五六".charAt(new Date().getDay())
+				this.dateMessage = this.getDates(date)
+			},
+			// 获取最近一周
+			getDates(currentTime) {
+				var currentDate = new Date(currentTime)
+				var timesStamp = currentDate.getTime();
+				var currenDay = currentDate.getDay();
+				var dates = [];
+				for (var i = 0; i < 7; i++) {
+					dates.push(new Date(timesStamp + 24 * 60 * 60 * 1000 * (i - (currenDay + 6) % 7)).toLocaleDateString()
+						.replace(/\//g, '-') + "星期" + "天一二三四五六".charAt(new Date(timesStamp + 24 * 60 * 60 * 1000 * (i -
+							(currenDay + 6) % 7)).getDay()));
+				}
+				return dates
+			},
 			showToDoForm() {
 				this.$refs.show.open('bottom')
 				uni.hideTabBar()
@@ -138,6 +185,9 @@
 			showFinishForm() {
 				this.$refs.finishList.open('left')
 				uni.hideTabBar()
+			},
+			showDateChose() {
+				this.showDateChoice = true
 			},
 			aditToDoForm(index) {
 				this.$refs.adit.open('bottom')
@@ -271,6 +321,15 @@
 
 <style lang="scss">
 	.index {
+		.slot-wrap {
+			font-size: 38rpx;
+			font-family: "Comic Sans MS", "幼圆", "黑体", sans-serif;
+
+			.show-button {
+				font-family: "Comic Sans MS", "幼圆", "黑体", sans-serif;
+			}
+		}
+
 		.container-main {
 			.showList {
 				margin-top: 150rpx;
