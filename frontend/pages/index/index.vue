@@ -10,7 +10,7 @@
 			<u-popup v-model="showDateChoice" border-radius="14">
 				<view class="show-button">
 					<u-button v-for="(item,index) in dateMessage" :plain="true"
-						:custom-style="customStyle">{{item}}
+						:custom-style="customStyle" :key=index>{{item}}
 					</u-button>
 				</view>
 			</u-popup>

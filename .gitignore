@@ -1,3 +1,4 @@
 backend/node_modules/
 frontend/unpackage
 todoList.apk
+backend/config/private.js
