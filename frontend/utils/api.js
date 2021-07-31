@@ -1,5 +1,6 @@
-const BASE_URL = 'http://localhost:3000'
+// const BASE_URL = 'http://localhost:3000'
 // const BASE_URL = 'http://115.159.79.234:3000'
+const BASE_URL = 'https://todo-list-six-rose.vercel.app/'
 export const request = (options) => {
 	return new Promise((resolve,reject) => {
 		uni.request({
