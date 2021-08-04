@@ -31,7 +31,7 @@
 					注册</view>
 				<!-- 修改密码 -->
 				<view @click="changePassword">
-					<image src="../../static/icon/query.png" style="height: 45rpx;width: 45rpx;"></image>
+					<image src="../static/icon/query.png" style="height: 45rpx;width: 45rpx;"></image>
 				</view>
 			</view>
 			</form>
@@ -258,7 +258,7 @@
 	}
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 	.verflex {
 		display: flex;
 	}
@@ -281,7 +281,7 @@
 		.form-input {
 
 			.usernameImg {
-				background-image: url(../../static/icon/Group.png);
+				background-image: url(../static/icon/Group.png);
 				background-size: 45rpx 45rpx;
 				background-repeat: no-repeat;
 				background-position: left;
@@ -289,7 +289,7 @@
 			}
 
 			.password {
-				background-image: url(../../static/icon/Lock.png);
+				background-image: url(../static/icon/Lock.png);
 				background-size: 45rpx 45rpx;
 				background-repeat: no-repeat;
 				background-position: left;

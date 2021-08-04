@@ -1,11 +1,9 @@
-// todolist 请求接口
-// const BASE_URL = 'http://localhost:3000'
-// const BASE_URL = 'http://115.159.79.234:3000'
-const BASE_URL = 'https://todo-list-six-rose.vercel.app'
-export const request = (options) => {
+/* 第三方图片请求接口 https://pixabay.com/api/docs/ */
+const IMG_BASE_URL = 'https://pixabay.com/api/'
+export const imgRequest = (options) => {
 	return new Promise((resolve,reject) => {
 		uni.request({
-			url:BASE_URL + options.url,
+			url:IMG_BASE_URL + options.url,
 			method:options.method || 'Get',
 			data:options.data || {},
 			success:(res)=>{

@@ -1,106 +1,35 @@
 <template>
 	<view class="index">
+		<!-- 头部导航栏 -->
 		<u-navbar :is-back="false" v-if="isLogin">
+			<!-- 显示当前日期 -->
 			<view class="slot-wrap" @click="showDateChose">
 				<u-icon name="calendar" color="#2AC940" size="40"></u-icon>
 				{{todayDate}}
 				{{week}}
 			</view>
-			<!-- 最近一周日期选择 -->
+			<!-- 弹出层，显示可选的一周的时间 -->
 			<u-popup v-model="showDateChoice" border-radius="14">
 				<view class="show-button">
-					<u-button v-for="(item,index) in dateMessage" :plain="true"
-						:custom-style="customStyle" :key=index>{{item}}
+					<u-button v-for="(item,index) in dateMessage" :plain="true" :custom-style="customStyle" :key=index>
+						{{item}}
 					</u-button>
 				</view>
 			</u-popup>
 		</u-navbar>
+
 		<!-- todoList主体内容 -->
-		<view class="container-main" v-if="isLogin">
-			<view v-if="listData.length == 0">
-				<image class="container-image" src="../../static/index/mian.png"></image>
-				<text>暂无日程</text>
-			</view>
-			<view v-if="listData.length !== 0" class="showList">
-				<!-- 标题卡片模式 -->
-				<!-- 				<uni-card v-for="(item,index) in listData" @click="aditToDoForm(index)" :key="item._id"
-					:title="item.toDo" mode="title" :is-shadow="true" :note="item.date">
-					{{item.toDoDescription}}
-				</uni-card> -->
-			</view>
-			<view v-if="showAdd" class="circleAdd" @click="showToDoForm">
-				<view class="addPng">
-					<image class="addPng-image" src="../../static/index/add.png" mode="scaleToFill"></image>
-				</view>
-			</view>
-			<!-- 			<view v-if="showAdd" class="bin" @click="showFinishForm">
-				<view style="z-index: 1000;position: fixed;bottom: 130rpx;margin-left: 110rpx;color: #4CD964;">
-					{{isFinishNums}}
-				</view>
-				<view class="binPng">
-					<image class="binPng-image" src="../../static/index/bin.png" mode="scaleToFill"></image>
-				</view>
-			</view> -->
-			<!-- 			<uni-popup class="finish-popup" ref="finishList" type="left" background-color="#fff" @change="showAddPic">
-				<view class="finish-title">
-					<view class="finish-title-today">今天</view>
-				</view>
-				<scroll-view class="scroll-view" scroll-y="true" show-scrollbar='true'>
-					<view style="display: flex;flex-direction: column;justify-content: space-between;"
-						v-for="(item,index) in finishList" @click="aditFinishListToTrue(index)" :key="item._id">
-						<view style="margin: 20rpx 60rpx;">
-							<view class="">
-								{{item.toDo}}
-							</view>
-							<view class="">
-								{{item.date}}
-							</view>
-						</view>
-					</view>
-				</scroll-view>
-			</uni-popup> -->
-
-			<!-- 弹出层 -->
-			<uni-popup class="uni-popup" ref="adit" type="bottom" background-color="#fff" @change="showAddPic">
-				<view class="addToDoList" v-if="listData.length !== 0">
-					<view class="toDoListTitle">
-						<input v-model="listData[aditIndex].toDo" class="input-todo" type="text" value=""
-							placeholder="准备做什么" />
-					</view>
-					<input v-model="listData[aditIndex].toDoDescription" class="input-todoDetails" type="text" value=""
-						placeholder="添加描述" />
-					<uni-datetime-picker type="time" @change="editDate"></uni-datetime-picker>
-					<view style="display:flex;justify-content: space-around;margin: 150rpx auto;">
-						<view style="color:#4CD964;" @click="aditToDoList(aditIndex)">保存</view>
-						<view style="color:#4CD964;" @click="aditFinishList(aditIndex)">移入完成</view>
-						<view style="color:#4CD964;" @click="deleteToDoList(aditIndex)">删除</view>
-					</view>
-				</view>
-			</uni-popup>
-			<uni-popup class="uni-popup" ref="show" type="bottom" background-color="#fff" @change="showAddPic">
-				<view class="addToDoList">
-					<view class="toDoListTitle">
-						<input v-model="toDo" class="input-todo" type="text" value="" placeholder="准备做什么" />
-
-					</view>
-					<input v-model="toDoDescription" class="input-todoDetails" type="text" value=""
-						placeholder="添加描述" />
-					<uni-datetime-picker type="time" @change="changeDate"></uni-datetime-picker>
-					<view style="display: flex;">
-						<view style="color:#4CD964;margin: 150rpx auto;" @click="addToDoList">添加</view>
-					</view>
-				</view>
-			</uni-popup>
-		</view>
+		<Todolist v-if="isLogin" />
 		<!-- 登录组件 -->
 		<view v-else>
-			<login @changeIsLogin="changeIsLogin"></login>
+			<Login @changeIsLogin="changeIsLogin" />
 		</view>
 	</view>
 </template>
 
 <script>
-	import login from '../../components/login/login.vue'
+	import Login from '../../components/Login.vue'
+	import Todolist from '../../components/Todolist.vue'
 	export default {
 		data() {
 			return {
@@ -110,20 +39,13 @@
 				toDo: "",
 				toDoDescription: "",
 				date: "",
-				// 是否进入完成箱子
-				isFinish: false,
-				isFinishNums: 0,
-				showFinish: false,
-				listData: [],
-				finishList: [],
-				// 是否有添加图片
-				showAdd: true,
-				// 时间
+				// 选择日期
 				dateMessage: [],
 				todayDate: 0,
 				week: '',
-				// popup层
+				// 选择日期popup层
 				showDateChoice: false,
+				// 修改弹出层button样式
 				customStyle: {
 					marginTop: '20px', // 注意驼峰命名，并且值必须用引号包括，因为这是对象
 					color: '#2AC940'
@@ -156,9 +78,11 @@
 			}
 		},
 		components: {
-			login
+			Login,
+			Todolist
 		},
 		methods: {
+			// 初始化日期数据
 			init() {
 				let date = new Date()
 				this.todayDate = (date.getMonth() + 1) + '-' + date.getDate()
@@ -178,40 +102,16 @@
 				}
 				return dates
 			},
-			showToDoForm() {
-				this.$refs.show.open('bottom')
-				uni.hideTabBar()
-			},
-			showFinishForm() {
-				this.$refs.finishList.open('left')
-				uni.hideTabBar()
-			},
+			// 展示日期选择
 			showDateChose() {
 				this.showDateChoice = true
 			},
-			aditToDoForm(index) {
-				this.$refs.adit.open('bottom')
-				this.aditIndex = index
-				uni.hideTabBar()
-			},
-			changeDate(time) {
-				this.date = new Date()
-				console.log(this.date)
-				this.date = time
-			},
-			editDate(time) {
-				this.listData[this.aditIndex].date = time
-			},
-			showAddPic() {
-				this.showAdd = !this.showAdd
-				uni.showTabBar()
-			},
 			// 修改已完成的todoList
-			aditFinishList(aditIndex) {
+			async aditFinishList(aditIndex) {
 				let data = {
 					_id: this.listData[aditIndex]._id
 				}
-				const res = this.$request({
+				const res = await this.$request({
 					url: `/aditFinishList/?isFinish=${!this.isFinish}`,
 					method: 'POST',
 					data: data
@@ -310,148 +210,27 @@
 				this.userId = val
 				this.getToDoList()
 			}
-		},
-		watch: {
-			inputAuto() {
-
-			}
 		}
 	}
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 	.index {
+		font-size: 15px;
+		font-family: 'Open Sans', sans-serif;
+		color: #444;
+		background-color: #fefefe;
+		background-image: linear-gradient($theme-color-green 0%, $theme-color-green-light 100%);
+		background-repeat: no-repeat;
+		background-size: cover;
+		padding: 20px 10px;
+		margin: 0;
+		min-height: 100vh;
+		position: relative;
+
 		.slot-wrap {
-			font-size: 38rpx;
+			font-size: $uni-font-size-lg;
 			font-family: "Comic Sans MS", "幼圆", "黑体", sans-serif;
-
-			.show-button {
-				font-family: "Comic Sans MS", "幼圆", "黑体", sans-serif;
-			}
 		}
-
-		.container-main {
-			.showList {
-				margin-top: 150rpx;
-				width: 750rpx;
-
-				.uni-card__title-content-title {
-					color: #333333;
-					font-size: 38rpx;
-				}
-
-				.listItem {
-					display: flex;
-					justify-content: space-between;
-					margin: 20rpx 30rpx;
-					background-color: #efefef;
-					border-radius: 20rpx;
-
-					.listItem-toDo {
-						color: black;
-						font-size: 50rpx;
-					}
-
-					.listItem-toDoDescription {
-						font-size: 38rpx;
-					}
-
-					.listItem-date {
-						font-size: 28rpx;
-						margin: auto auto;
-					}
-				}
-			}
-
-			.container-image {
-				display: block;
-				margin: 375rpx auto 90rpx;
-				width: 400rpx;
-				height: 400rpx;
-			}
-
-			text {
-				display: block;
-				text-align: center;
-				color: #828282
-			}
-
-			.bin {
-				.binPng {
-					.binPng-image {
-						z-index: 999;
-						position: fixed;
-						bottom: 50rpx;
-						width: 120rpx;
-						height: 120rpx;
-					}
-				}
-			}
-
-			.circleAdd {
-				z-index: 999;
-				// 让子类居中
-				display: flex;
-				align-items: center;
-				justify-content: center;
-				position: fixed;
-				bottom: 50rpx;
-				left: 600rpx;
-				width: $circlesize;
-				height: $circlesize;
-				// 在scss里不用使用calc()计算函数即可完成计算
-				border-radius: $circlesize / 2;
-				box-shadow: 0px 5px 4px #828282;
-				background-color: #2AC940;
-				float: right;
-				margin-top: 130rpx;
-				margin-right: 40rpx;
-
-				.addPng-image {
-					width: 20rpx;
-					height: 20rpx;
-				}
-			}
-
-			.finish-popup {
-				.finish-title {
-					margin-top: 50rpx;
-					display: flex;
-
-					.finish-title-today {
-						margin-bottom: 30rpx;
-						color: #4CD964;
-						margin-right: 350rpx;
-					}
-				}
-			}
-
-			.uni-popup {
-				.addToDoList {
-					height: 700rpx;
-
-					input {
-						margin-bottom: 10rpx;
-					}
-
-					.input-todo {}
-
-					.input-todoDetails {
-						margin: 30rpx 30rpx;
-						font-size: 28rpx;
-
-					}
-
-					.toDoListTitle {
-						display: flex;
-						justify-content: space-between;
-						flex-wrap: nowrap;
-						margin: 30rpx 30rpx;
-					}
-				}
-
-			}
-		}
-
 	}
 </style>
