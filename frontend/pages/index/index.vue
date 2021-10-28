@@ -24,7 +24,7 @@
     </u-navbar>
 
     <!-- todoList主体内容 -->
-    <Todolist v-if="isLogin" />
+    <Todolist v-if="isLogin" @addTodo="addTodo" />
     <!-- 登录组件 -->
     <view v-else>
       <Login @changeIsLogin="changeIsLogin" />
@@ -90,7 +90,14 @@ export default {
     // 初始化日期数据
     init() {
       let date = new Date();
-      this.todayDate = date.getMonth() + 1 + "-" + date.getDate();
+      this.todayDate =
+        date.getFullYear() +
+        "-" +
+        (date.getMonth() + 1) +
+        "-" +
+        date.getDate() +
+        "星期" +
+        "天一二三四五六".charAt(new Date().getDay());
       this.week = "星期" + "天一二三四五六".charAt(new Date().getDay());
       this.dateMessage = this.getDates(date);
     },
@@ -118,8 +125,7 @@ export default {
       return dates;
     },
     // 展示日期选择
-    showDateChose(item) {
-
+    showDateChose() {
       this.showDateChoice = true;
     },
     // 修改已完成的todoList
@@ -227,8 +233,14 @@ export default {
       this.getToDoList();
     },
     changeDate(item) {
-			this.todayDate = item;
+      this.todayDate = item;
       this.showDateChoice = false;
+    },
+    addTodo(value) {
+      this.toDo = value.toDo;
+      this.toDoDescription = value.toDoDescription;
+      this.date = this.todayDate;
+      this.addToDoList();
     },
   },
 };

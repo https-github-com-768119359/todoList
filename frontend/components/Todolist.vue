@@ -15,18 +15,18 @@
 				</view>
 				<!-- 选择图片 -->
 				<view class="todolist-input-imgUrl">
-					<u-input v-model="todolistInfo.imgUrl" type="text" border="true" placeholder="图片路径" />
+					<u-input v-model="todolistInfo.imgUrl" type="text" border="true" placeholder="图片搜索名" />
 					<u-button :custom-style="customStyle" type="primary" shape="square" :ripple="true"
 						ripple-bg-color="#03c90a" @click="changeShowChoosePics">选择图片
 					</u-button>
-					<ImgUrl ref="imgUrlEdit" />
+					<ImgUrl ref="imgUrlEdit" @changeImgQuery="changeImgQuery"/>
 				</view>
 				<!-- 新建表单 -->
 				<view class="todolist-input-todoDescriptionWithButton">
 					<u-input v-model="todolistInfo.toDoDescription" type="textarea" border="true" placeholder="内容"
 						height="100" auto-height="true" />
 					<u-button :custom-style="customStyle" type="primary" shape="square" :ripple="true"
-						ripple-bg-color="#03c90a">新建清单
+						ripple-bg-color="#03c90a" @click="addTodo">新建清单
 					</u-button>
 				</view>
 			</u-form>
@@ -102,7 +102,14 @@
 			},
 			changeShowChoosePics() {
 				this.$refs.imgUrlEdit.showChoosePics = true
-			}
+			},
+			changeImgQuery(value) {
+				console.log(value);
+				this.todolistInfo.imgUrl = value;
+			},
+			addTodo() {
+				this.$emit("addTodo",this.todolistInfo);
+			},
 		},
 	}
 </script>
