@@ -6,14 +6,15 @@ module.exports = (app) => {
         const userId = req.params.userId
         // 查询参数
         const isFinish = req.query.isFinish
-            todoListModel.find({
-                userId: userId,
-                isFinish:isFinish
-            }, (err, todoData) => {
-                if (err)
-                    console.log(err)
-                res.json(todoData)
-            })
+        const date = req.query.date
+        todoListModel.find({
+            userId: userId,
+            isFinish: isFinish
+        }, (err, todoData) => {
+            if (err)
+                console.log(err)
+            res.json(todoData)
+        })
     })
 
     // 添加 todoList
@@ -51,8 +52,8 @@ module.exports = (app) => {
         todoListModel.updateOne({
             _id: id
         }, {
-            $set:{isFinish:isFinish}
-        },(err, result) => {
+            $set: { isFinish: isFinish }
+        }, (err, result) => {
             if (err)
                 console.log(err)
             res.json(result)

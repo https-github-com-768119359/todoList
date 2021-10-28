@@ -10,6 +10,7 @@ const todoListSchema = new Schema({
     toDo: String,
     toDoDescription: String,
     date: String,
+    imgQuery: String,
     // 是否完成，true则进入代办箱
     isFinish:Boolean
 })
